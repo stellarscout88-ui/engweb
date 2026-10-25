@@ -773,7 +773,7 @@
           /* 播放器：入到呢頁先即場生成 iframe，元素一出世就帶實網址（唔再用 JS 複製網址嗰套舊寫法，
              iOS Safari 會將嗰種幀顯示成全白）；離開呢頁就成個 iframe 移除停播，唔好俾聲繼續出 */
           var biliWrap = view.querySelector(".bili-wrap");
-          var playerHtml = '<iframe src="https://player.bilibili.com/player.html?bvid=' + EP_BV[ep.n] + '&page=1&danmaku=0" title="Yakka Dee ' + ep.en + '（Bilibili 播放器）" allow="autoplay; fullscreen; encrypted-media; picture-in-picture" allowfullscreen="allowfullscreen"></iframe>';
+          var playerHtml = '<iframe src="https://player.bilibili.com/player.html?bvid=' + EP_BV[ep.n] + '&page=1&danmaku=0" title="Yakka Dee ' + ep.en + '（Bilibili 播放器）" referrerpolicy="no-referrer" allow="autoplay; fullscreen; encrypted-media; picture-in-picture" allowfullscreen="allowfullscreen"></iframe>';
           new MutationObserver(function () {
             if (view.hidden) {
               if (biliWrap.querySelector("iframe")) biliWrap.innerHTML = "";
@@ -1106,7 +1106,7 @@
             /* 播放器：入到呢頁先即場生成 iframe，元素一出世就帶實網址（唔再用 JS 複製網址嗰套舊寫法，
                iOS Safari 會將嗰種幀顯示成全白）；離開呢頁就成個 iframe 移除停播，唔好俾聲繼續出 */
             var biliWrap = ev.querySelector(".bili-wrap");
-            var playerHtml = '<iframe src="https://player.bilibili.com/player.html?bvid=' + ep[4] + '&page=1&danmaku=0" title="Yakka Dee ' + ep[1] + '（Bilibili 播放器）" allow="autoplay; fullscreen; encrypted-media; picture-in-picture" allowfullscreen="allowfullscreen"></iframe>';
+            var playerHtml = '<iframe src="https://player.bilibili.com/player.html?bvid=' + ep[4] + '&page=1&danmaku=0" title="Yakka Dee ' + ep[1] + '（Bilibili 播放器）" referrerpolicy="no-referrer" allow="autoplay; fullscreen; encrypted-media; picture-in-picture" allowfullscreen="allowfullscreen"></iframe>';
             new MutationObserver(function () {
               if (ev.hidden) {
                 if (biliWrap.querySelector("iframe")) biliWrap.innerHTML = "";
@@ -1260,7 +1260,7 @@
           /* 播放器：入到呢頁先即場生成 iframe，元素一出世就帶實網址（唔再用 JS 複製網址嗰套舊寫法，
              iOS Safari 會將嗰種幀顯示成全白）；離開呢頁就成個 iframe 移除停播 */
           var biliWrap = ev.querySelector(".bili-wrap");
-          var playerHtml = '<iframe src="https://player.bilibili.com/player.html?bvid=' + song[4] + '&page=1&danmaku=0" title="Super Simple Songs ' + song[1] + '（Bilibili 播放器）" allow="autoplay; fullscreen; encrypted-media; picture-in-picture" allowfullscreen="allowfullscreen"></iframe>';
+          var playerHtml = '<iframe src="https://player.bilibili.com/player.html?bvid=' + song[4] + '&page=1&danmaku=0" title="Super Simple Songs ' + song[1] + '（Bilibili 播放器）" referrerpolicy="no-referrer" allow="autoplay; fullscreen; encrypted-media; picture-in-picture" allowfullscreen="allowfullscreen"></iframe>';
           new MutationObserver(function () {
             if (ev.hidden) {
               if (biliWrap.querySelector("iframe")) biliWrap.innerHTML = "";
@@ -1366,7 +1366,7 @@
       var rainView = document.getElementById("ep-view");
       var rainWrap = rainView ? rainView.querySelector(".bili-wrap") : null;
       if (rainView && rainWrap) {
-        var rainPlayerHtml = '<iframe src="https://player.bilibili.com/player.html?bvid=BV1na9gYgEpq&page=1&danmaku=0" title="Yakka Dee Rain（Bilibili 播放器）" allow="autoplay; fullscreen; encrypted-media; picture-in-picture" allowfullscreen="allowfullscreen"></iframe>';
+        var rainPlayerHtml = '<iframe src="https://player.bilibili.com/player.html?bvid=BV1na9gYgEpq&page=1&danmaku=0" title="Yakka Dee Rain（Bilibili 播放器）" referrerpolicy="no-referrer" allow="autoplay; fullscreen; encrypted-media; picture-in-picture" allowfullscreen="allowfullscreen"></iframe>';
         var rainMount = function () { if (!rainWrap.querySelector("iframe")) rainWrap.innerHTML = rainPlayerHtml; };
         var rainUnmount = function () { if (rainWrap.querySelector("iframe")) rainWrap.innerHTML = ""; };
         new MutationObserver(function () {

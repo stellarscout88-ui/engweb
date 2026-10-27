@@ -529,7 +529,7 @@
         overflow: hidden;
         background: #000;
       }
-      /* 官方格式嵌入：入頁即載 iframe（直接實 src、無 lazy），離頁移除停播 */
+      /* 官方格式嵌入：入頁即載 iframe（直接實 src、唔用延遲載入），離頁移除停播 */
       .ep-view .bili-wrap iframe {
         position: absolute;
         inset: 0;
@@ -653,7 +653,7 @@
           </div>
         </div>
         <div class="video-card">
-          <div class="bili-wrap" data-bili-src="https://player.bilibili.com/player.html?isOutside=true&bvid=BV1na9gYgEpq&p=1&danmaku=0"><iframe src="https://player.bilibili.com/player.html?isOutside=true&bvid=BV1na9gYgEpq&p=1&danmaku=0" referrerpolicy="no-referrer" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen title="Yakka Dee Rain Bilibili 播放器"></iframe></div>
+          <div class="bili-wrap" data-bili-src="https://player.bilibili.com/player.html?isOutside=true&aid=114079716870507&bvid=BV1na9gYgEpq&cid=28614921026&p=1&danmaku=0"><iframe src="https://player.bilibili.com/player.html?isOutside=true&aid=114079716870507&bvid=BV1na9gYgEpq&cid=28614921026&p=1&danmaku=0" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen title="Yakka Dee Rain Bilibili 播放器"></iframe></div>
         </div>
       </section>
 
@@ -665,6 +665,216 @@
       </footer>
     </div>
 </div>
+
+    <script>
+      /* ---------- Bilibili 完整官方參數對照表 ----------
+         aid/cid 逐段按 bvid 對照（來源：B 站公開 API 查得，2026-10-27）。
+         用戶 iPhone 探針實測定案：播放器網址必須帶齊 isOutside=true＋aid＋bvid＋cid，
+         而且 iframe 唔可以加任何 referrer 限制屬性，先至過到 B 站移動端審核正常播放。 */
+      var BILI_AC = {
+        "BV11JSPYJEsp": ["113512630196613", "26850756081"],
+        "BV12aoeBmEe7": ["116452854077956", "37746706459"],
+        "BV12osyzJExT": ["115443671105942", "33427754823"],
+        "BV13NRGYhEo3": ["114137598399254", "28795080043"],
+        "BV13g9YY9Ej2": ["114095638515394", "28662235621"],
+        "BV149syzHEqs": ["115443637489547", "33427621222"],
+        "BV14RsyzDEja": ["115443620709604", "33427556745"],
+        "BV14i98YuECA": ["114093306478908", "28657713652"],
+        "BV15798YHEom": ["114093239307983", "28657650817"],
+        "BV15BsgzeEF2": ["115405670581510", "33238419598"],
+        "BV15E98YDE6Q": ["114093222529843", "28657453924"],
+        "BV15E98YDEMW": ["114093222530076", "28657454219"],
+        "BV15E98YDESR": ["114093222528302", "28657453909"],
+        "BV15E98YDETV": ["114093222530136", "28657452160"],
+        "BV15E98YDEUG": ["114093222528329", "28657452895"],
+        "BV15E98YDEUP": ["114093222528337", "28657452499"],
+        "BV15E98YDEqx": ["114093222530042", "28657648027"],
+        "BV15K9YY4EFK": ["114095621735861", "28662171146"],
+        "BV15K9YY4EVD": ["114095621734480", "28662171882"],
+        "BV15SsjznEgp": ["115427044754857", "33345439967"],
+        "BV15qsgzNEFZ": ["115405687360675", "33238680936"],
+        "BV16Us3z1EgQ": ["115404831719545", "33232717167"],
+        "BV173oeBAE3B": ["116452753478868", "37746116428"],
+        "BV17598YWE5n": ["114093205750247", "28657454640"],
+        "BV17598YWEgm": ["114093205749941", "28657517686"],
+        "BV17598YWEu1": ["114093205749993", "28657454393"],
+        "BV17598YWEup": ["114093205749959", "28657389464"],
+        "BV17M4m1R7rm": ["1302451057", "1483395901"],
+        "BV19K9YYxE8F": ["114095621670385", "28662170729"],
+        "BV19K9YYxEDP": ["114095621669229", "28662171666"],
+        "BV19K9YYxEF6": ["114095621672548", "28662171682"],
+        "BV19K9YYxEJh": ["114095621671903", "28662170782"],
+        "BV19K9YYxEWM": ["114095621671693", "28662170495"],
+        "BV19K9YYxEbi": ["114095621670344", "28662170936"],
+        "BV19K9YYxEdU": ["114095621669848", "28662170902"],
+        "BV19K9YYxEdo": ["114095621669840", "28662171035"],
+        "BV19K9YYxEf1": ["114095621669749", "28662171713"],
+        "BV19K9YYxEnU": ["114095621671828", "28662171465"],
+        "BV19T9YYRE5b": ["114095604892555", "28662106576"],
+        "BV19T9YYRELX": ["114095604892538", "28662106697"],
+        "BV19T9YYREM8": ["114095604891950", "28662107028"],
+        "BV19T9YYREMp": ["114095604891957", "28662106943"],
+        "BV19T9YYRETc": ["114095604891972", "28662106834"],
+        "BV19T9YYREc6": ["114095604891826", "28662106541"],
+        "BV19T9YYREcp": ["114095604891779", "28662106356"],
+        "BV19T9YYREjT": ["114095604892532", "28662106643"],
+        "BV19T9YYREwx": ["114095604891726", "28662106970"],
+        "BV19h3Q6AEDk": ["117024806214320", "40525694230"],
+        "BV1AooYBkEXJ": ["116452971518206", "37747625906"],
+        "BV1BPs8zbEVU": ["115416861051086", "33295698271"],
+        "BV1BQs3zyEkM": ["115404865473253", "33232915515"],
+        "BV1CRbQ6tEut": ["117105303230606", "40968652955"],
+        "BV1Cb9YY6EA3": ["114095705555362", "28662235606"],
+        "BV1Cks3zSE3s": ["115404898828981", "33233175135"],
+        "BV1DFbh6yEDU": ["117108625120254", "40982809903"],
+        "BV1DVeEe1ET6": ["112959686705802", "500001649237429"],
+        "BV1Dbs1z4EG3": ["115443587089964", "33427359860"],
+        "BV1Dg9YYXE9B": ["114095638450098", "28662235769"],
+        "BV1Dg9YYXEXo": ["114095638450074", "28662235944"],
+        "BV1DsoeBpE5z": ["116452870853853", "37746903520"],
+        "BV1G6sgzAEQN": ["115405318260970", "33235996094"],
+        "BV1Gfb86jEj8": ["117108641961670", "40982809000"],
+        "BV1GrsgzaE4J": ["115405301482724", "33235865389"],
+        "BV1Hms3z7EcZ": ["115404848628245", "33232782159"],
+        "BV1JxsgzkEJ5": ["115405536364699", "33237436415"],
+        "BV1KJSPYnEHL": ["113512630261666", "26850757144"],
+        "BV1Ki98YuE2Y": ["114093306415929", "28657713629"],
+        "BV1Ki98YuEVb": ["114093306416197", "28657714614"],
+        "BV1L798YHED8": ["114093239304464", "28657648798"],
+        "BV1L798YHENL": ["114093239308062", "28657649603"],
+        "BV1L798YHEWH": ["114093239307012", "28657648742"],
+        "BV1L798YHEaQ": ["114093239305495", "28657649337"],
+        "BV1L798YHEb2": ["114093239305666", "28657650338"],
+        "BV1L798YHEkq": ["114093239304409", "28657651678"],
+        "BV1L798YHEmT": ["114093239304668", "28657713397"],
+        "BV1L798YHEmV": ["114093239304662", "28657651549"],
+        "BV1L798YHEpg": ["114093239307073", "28657650250"],
+        "BV1LDb86QEfE": ["117108658739011", "40982807753"],
+        "BV1LE98YDEKm": ["114093222527317", "28657452364"],
+        "BV1LE98YDEwh": ["114093222527053", "28657452613"],
+        "BV1LE98YDEwu": ["114093222527066", "28657451986"],
+        "BV1LqsgzKE8p": ["115405687554799", "33238683379"],
+        "BV1M8s3zfED5": ["115404764678715", "33232260338"],
+        "BV1MDsgzxExZ": ["115405267927265", "33235666122"],
+        "BV1MUsgzoErD": ["115405284707058", "33235796393"],
+        "BV1MtoeBHEm4": ["116452904476069", "37747101050"],
+        "BV1N9oYByEkN": ["116452937962976", "37747362696"],
+        "BV1N9oYByEzb": ["116452937962623", "37747360769"],
+        "BV1NCSTYhEtS": ["113514492464745", "26857047076"],
+        "BV1NdoYB5Eek": ["116452988491772", "37747756384"],
+        "BV1NdoYBVEJx": ["116452988293400", "37747688203"],
+        "BV1PdoYBVEQN": ["116452988296010", "37747689165"],
+        "BV1Qfb86LERQ": ["117108641896223", "40982809820"],
+        "BV1Qfb86LES3": ["117108641896096", "40982809273"],
+        "BV1Qfb86LESX": ["117108641896056", "40982809393"],
+        "BV1Qfb86LEXV": ["117108641896432", "40982808183"],
+        "BV1Qg9YYXE6A": ["114095638446498", "28662235888"],
+        "BV1Qg9YYXEku": ["114095638446376", "28662235426"],
+        "BV1Qg9YYXEvG": ["114095638446267", "28662235747"],
+        "BV1Qss1zFESn": ["115443570315047", "33427293229"],
+        "BV1Qss3zwEDa": ["115405100155434", "33234357106"],
+        "BV1RDb86DEZG": ["117108658673747", "40982807504"],
+        "BV1RLoeBbEx5": ["116452770192007", "37746184102"],
+        "BV1RfuH6yErh": ["117048998958097", "40660566194"],
+        "BV1SsoeBpEoB": ["116452870854896", "37746903942"],
+        "BV1StoeBnENC": ["116452904408935", "37747099542"],
+        "BV1TC4y1A7mM": ["749064243", "1347680906"],
+        "BV1Ti98YuEHi": ["114093306413890", "28657714274"],
+        "BV1Ti98YuEuz": ["114093306413119", "28657713971"],
+        "BV1Uas1zsEyN": ["115443486426708", "33426901778"],
+        "BV1UboeBSEKE": ["116452820522225", "37746576335"],
+        "BV1UtoeBnEU6": ["116452904408258", "37747163646"],
+        "BV1UtoeBnEYs": ["116452904409215", "37747100171"],
+        "BV1UwJq6NEE5": ["117455544392637", "42817684759"],
+        "BV1VHs1zAE6j": ["115443402608601", "33426573731"],
+        "BV1VK9YY4E7H": ["114095621737704", "28662170751"],
+        "BV1VK9YY4EEi": ["114095621737632", "28662171196"],
+        "BV1VT9YYdETr": ["114095604960169", "28662106562"],
+        "BV1VT9YYdEh5": ["114095604957269", "28662106897"],
+        "BV1Wdgs6MEbZ": ["117088458970295", "40879983994"],
+        "BV1WooYBkECC": ["116452971582937", "37747625187"],
+        "BV1XK9YYxEDp": ["114095621672063", "28662171566"],
+        "BV1XK9YYxESM": ["114095621672071", "28662171535"],
+        "BV1XK9YYxESe": ["114095621672110", "28662170999"],
+        "BV1XK9YYxESm": ["114095621672025", "28662171909"],
+        "BV1XK9YYxEZ8": ["114095621672602", "28662171431"],
+        "BV1XT9YYRE5u": ["114095604895426", "28662106300"],
+        "BV1XT9YYREEt": ["114095604895688", "28662106285"],
+        "BV1XT9YYREH8": ["114095604895512", "28662107261"],
+        "BV1XT9YYREHG": ["114095604895593", "28662106723"],
+        "BV1XT9YYREJS": ["114095604895673", "28662106426"],
+        "BV1XT9YYRES9": ["114095604892963", "28662107166"],
+        "BV1XT9YYRESV": ["114095604892938", "28662106467"],
+        "BV1XT9YYRESv": ["114095604892989", "28662107001"],
+        "BV1XT9YYREjw": ["114095604895325", "28662106880"],
+        "BV1Xss1zFEEq": ["115443570312895", "33427296157"],
+        "BV1Y6sgzAErS": ["115405318325299", "33235929261"],
+        "BV1YJoeBoENG": ["116452719990925", "37745789377"],
+        "BV1YJoeBoEbk": ["116452719990130", "37745721684"],
+        "BV1Yfb86jEcF": ["117108642025905", "40982809421"],
+        "BV1aLMR6FEmy": ["117031986794840", "40566195016"],
+        "BV1arsgzaEo6": ["115405301548106", "33235799284"],
+        "BV1axs1z8Ebe": ["115443553666486", "33427229635"],
+        "BV1bZsqzvEw6": ["115422414244352", "33323353543"],
+        "BV1bmoYBUEW6": ["116453005136158", "37747818830"],
+        "BV1cPs3z2EKm": ["115405049826317", "33233964184"],
+        "BV1d5oeBFEr9": ["116452786966855", "37746311663"],
+        "BV1dDb86DE6B": ["117108658671920", "40982807916"],
+        "BV1dDb86DEJN": ["117108658673048", "40982745045"],
+        "BV1dDb86DEJs": ["117108658673037", "40982806856"],
+        "BV1dGoeBhE9G": ["116452736637543", "37745854210"],
+        "BV1dLs3zMEoN": ["115404999491832", "33233767564"],
+        "BV1eE98YDEQN": ["114093222596414", "28657453376"],
+        "BV1fTs3zCEzk": ["115405083380850", "33234290640"],
+        "BV1gC411b7FQ": ["1952387393", "1483405501"],
+        "BV1gJ4m177uH": ["1252078148", "1481470810"],
+        "BV1gW3R6vENH": ["117024990697572", "40526807653"],
+        "BV1h1sgzfELV": ["115405251215944", "33235274865"],
+        "BV1hbs1ztEcz": ["115443587220939", "33427361626"],
+        "BV1i598YWECd": ["114093205818597", "28657454908"],
+        "BV1i798YHEs9": ["114093239370707", "28657651032"],
+        "BV1ihoYB8EZZ": ["116453256795559", "37749591920"],
+        "BV1im421g7h5": ["1606202125", "1609929909"],
+        "BV1j598YWE5d": ["114093205753057", "28657516597"],
+        "BV1j598YWERy": ["114093205751262", "28657516926"],
+        "BV1j598YWEpU": ["114093205753560", "28657517464"],
+        "BV1j598YWEtx": ["114093205753812", "28657451554"],
+        "BV1jhoYB8ELK": ["116453256731279", "37749591094"],
+        "BV1kb9YY6EGW": ["114095705558704", "28662235668"],
+        "BV1kb9YY6EYd": ["114095705557961", "28662235496"],
+        "BV1kb9YY6EjS": ["114095705558967", "28662235511"],
+        "BV1mE9YY7EKs": ["114095755889775", "28662235486"],
+        "BV1mvs1zpE3Q": ["115443519981027", "33426968465"],
+        "BV1na9gYgEpq": ["114079716870507", "28614921026"],
+        "BV1oesgzTEwn": ["115405653935223", "33238354062"],
+        "BV1ohoYB8Et1": ["116453256861045", "37749590560"],
+        "BV1q8shz8EGw": ["115418337378361", "33305789216"],
+        "BV1qLs1zTEdV": ["115443469779514", "33426704365"],
+        "BV1r1s3zmETM": ["115404932385493", "33233372602"],
+        "BV1rms3zjEwS": ["115404848497247", "33232847574"],
+        "BV1s1STYFEET": ["113514475753280", "26856980785"],
+        "BV1sU3Q6DERs": ["117024873256009", "40526021356"],
+        "BV1sZsyzUEyW": ["115443654265398", "33427685969"],
+        "BV1sjsgzUEcz": ["115405569918339", "33237700103"],
+        "BV1t11NY2EVb": ["113360897053209", "26438272544"],
+        "BV1tZsqzvEaF": ["115422414245113", "33323421548"],
+        "BV1tas3ztE8P": ["115404815075761", "33232651707"],
+        "BV1uUsyzREJR": ["115443687755524", "33427818301"],
+        "BV1v798YHEUa": ["114093239372766", "28657713703"],
+        "BV1v798YHEXH": ["114093239372600", "28657649788"],
+        "BV1vDb86QEQ8": ["117108658806626", "40982807641"],
+        "BV1vE98YDEMx": ["114093222595394", "28657453279"],
+        "BV1vE98YDEky": ["114093222593534", "28657648342"],
+        "BV1xosyzJEf7": ["115443671040284", "33427689079"],
+        "BV1yjsgzUEgv": ["115405569984977", "33237764573"],
+        "BV1ysf8Y5E4y": ["113870806978800", "28011071704"]
+      };
+      function biliUrl(bvid) {
+        var ac = BILI_AC[bvid];
+        if (!ac) return "https://player.bilibili.com/player.html?isOutside=true&bvid=" + bvid + "&p=1&danmaku=0";
+        return "https://player.bilibili.com/player.html?isOutside=true&aid=" + ac[0] + "&bvid=" + bvid + "&cid=" + ac[1] + "&p=1&danmaku=0";
+      }
+    </script>
 
     <script>
       var episodes = [
@@ -774,9 +984,9 @@
           /* 官方格式嵌入：入頁渲染時即建立 iframe、直接帶實 src；
              離頁時由全站導航移除 iframe 停播（data-bili-src 留作重入頁重建）。 */
           var biliWrap = view.querySelector(".bili-wrap");
-          var biliSrc5 = "https://player.bilibili.com/player.html?isOutside=true&bvid=" + EP_BV[ep.n] + "&p=1&danmaku=0";
+          var biliSrc5 = biliUrl(EP_BV[ep.n]);
           biliWrap.setAttribute("data-bili-src", biliSrc5);
-          biliWrap.innerHTML = '<iframe src="' + biliSrc5 + '" referrerpolicy="no-referrer" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen title="Yakka Dee ' + ep.en + ' Bilibili 播放器"></iframe>';
+          biliWrap.innerHTML = '<iframe src="' + biliSrc5 + '" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen title="Yakka Dee ' + ep.en + ' Bilibili 播放器"></iframe>';
 
           return view;
         }
@@ -1102,9 +1312,9 @@
             /* 官方格式嵌入：入頁渲染時即建立 iframe、直接帶實 src；
                離頁時由全站導航移除 iframe 停播（data-bili-src 留作重入頁重建）。 */
             var biliWrap = ev.querySelector(".bili-wrap");
-            var biliSrcL = "https://player.bilibili.com/player.html?isOutside=true&bvid=" + ep[4] + "&p=1&danmaku=0";
+            var biliSrcL = biliUrl(ep[4]);
             biliWrap.setAttribute("data-bili-src", biliSrcL);
-            biliWrap.innerHTML = '<iframe src="' + biliSrcL + '" referrerpolicy="no-referrer" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen title="Yakka Dee ' + ep[1] + ' Bilibili 播放器"></iframe>';
+            biliWrap.innerHTML = '<iframe src="' + biliSrcL + '" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen title="Yakka Dee ' + ep[1] + ' Bilibili 播放器"></iframe>';
           });
         });
       })();
@@ -1251,9 +1461,9 @@
           /* 官方格式嵌入：入頁渲染時即建立 iframe、直接帶實 src；
              離頁時由全站導航移除 iframe 停播（data-bili-src 留作重入頁重建）。 */
           var biliWrap = ev.querySelector(".bili-wrap");
-          var biliSrcS = "https://player.bilibili.com/player.html?isOutside=true&bvid=" + song[4] + "&p=1&danmaku=0";
+          var biliSrcS = biliUrl(song[4]);
           biliWrap.setAttribute("data-bili-src", biliSrcS);
-          biliWrap.innerHTML = '<iframe src="' + biliSrcS + '" referrerpolicy="no-referrer" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen title="Super Simple Songs ' + song[1] + ' Bilibili 播放器"></iframe>';
+          biliWrap.innerHTML = '<iframe src="' + biliSrcS + '" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen title="Super Simple Songs ' + song[1] + ' Bilibili 播放器"></iframe>';
         });
       })();
     </script>
@@ -1291,7 +1501,6 @@
             if (!src) continue;
             var ifr = document.createElement("iframe");
             ifr.setAttribute("src", src);
-            ifr.setAttribute("referrerpolicy", "no-referrer");
             ifr.setAttribute("allow", "autoplay; fullscreen; picture-in-picture; encrypted-media");
             ifr.setAttribute("allowfullscreen", "");
             ifr.setAttribute("title", "Bilibili 播放器");

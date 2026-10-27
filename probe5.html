@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PROBE5 - JS-created iframe, default referer, full params</title>
+<style>
+  body { background:#0b1c2c; color:#dbeafe; font-family: system-ui, sans-serif; margin:0; padding:16px; }
+  .wrap { max-width: 720px; margin: 0 auto; }
+  .player-box { width:100%; aspect-ratio:16/9; background:#000; }
+  iframe { width:100%; height:100%; display:block; }
+  p { line-height:1.6; font-size:15px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h2>探針頁 5 PROBE5</h2>
+  <p>同探針頁 4 一樣係 JavaScript 即時建立 iframe＋完整官方參數（Banana），但今次唔落 referrerpolicy（用返瀏覽器預設，會照傳來源頁網址）。</p>
+  <div class="player-box" id="box"></div>
+  <p>如果探針 4 播唔到但呢頁播到，即係 no-referrer 都係幫兇之一，主站要一併移除佢。</p>
+</div>
+<script>
+  var f = document.createElement('iframe');
+  f.src = 'https://player.bilibili.com/player.html?isOutside=true&aid=114093205749959&bvid=BV17598YWEup&cid=28657389464&p=1&danmaku=0';
+  f.setAttribute('allowfullscreen', 'true');
+  f.setAttribute('allow', 'fullscreen; encrypted-media');
+  f.setAttribute('scrolling', 'no');
+  f.setAttribute('frameborder', 'no');
+  document.getElementById('box').appendChild(f);
+</script>
+</body>
+</html>

@@ -529,6 +529,7 @@
         overflow: hidden;
         background: #000;
       }
+      /* 官方格式嵌入：入頁即載 iframe（直接實 src、無 lazy），離頁移除停播 */
       .ep-view .bili-wrap iframe {
         position: absolute;
         inset: 0;
@@ -536,59 +537,6 @@
         height: 100%;
         border: 0;
         display: block;
-      }
-      /* 手勢載入封面層：入頁只顯示呢層（emoji＋標題＋大播放掣），唔存在任何 iframe；
-         㩒落去先即場建立 iframe 原地播放。成層係一個掣，大小朋友都易㩒中。 */
-      .ep-view .bili-wrap .bili-cover {
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 5px;
-        padding: 8px 12px;
-        border: 0;
-        cursor: pointer;
-        font: inherit;
-        text-align: center;
-        color: var(--e-ink);
-        background: var(--e-sun-soft);
-      }
-      .ep-view .bili-cover .bili-cover-emoji {
-        font-size: clamp(2rem, 8vw, 3.2rem);
-        line-height: 1.1;
-      }
-      .ep-view .bili-cover .bili-cover-title {
-        font-family: "Baloo 2", "Nunito", "PingFang TC", sans-serif;
-        font-weight: 800;
-        font-size: clamp(1rem, 4.2vw, 1.45rem);
-        line-height: 1.25;
-      }
-      .ep-view .bili-cover .bili-cover-btn {
-        width: clamp(64px, 19vw, 88px);
-        height: clamp(64px, 19vw, 88px);
-        border-radius: 50%;
-        background: var(--accent, #ff8a3d);
-        color: #ffffff;
-        display: grid;
-        place-items: center;
-        font-size: clamp(1.5rem, 6vw, 2rem);
-        padding-left: 0.18em;
-        margin-top: 4px;
-        box-shadow: 0 8px 20px rgba(255, 138, 61, 0.45);
-        transition: transform 0.12s ease;
-      }
-      .ep-view .bili-cover:hover .bili-cover-btn,
-      .ep-view .bili-cover:focus-visible .bili-cover-btn { transform: scale(1.07); }
-      .ep-view .bili-cover:active .bili-cover-btn { transform: scale(0.94); }
-      .ep-view .bili-cover:focus-visible { outline: 4px solid var(--e-sky); outline-offset: -4px; }
-      .ep-view .bili-cover .bili-cover-hint {
-        font-weight: 800;
-        font-size: clamp(0.95rem, 3.6vw, 1.1rem);
-        color: var(--e-ink-soft);
       }
       .ep-view .ep-nav {
         display: flex;
@@ -705,7 +653,7 @@
           </div>
         </div>
         <div class="video-card">
-          <div class="bili-wrap"><button type="button" class="bili-cover" aria-label="播放 Yakka Dee Rain"><span class="bili-cover-emoji" aria-hidden="true">🌧️</span><span class="bili-cover-title">Rain《落雨啦！》</span><span class="bili-cover-btn" aria-hidden="true">▶</span><span class="bili-cover-hint">㩒嚟播放</span></button></div>
+          <div class="bili-wrap" data-bili-src="https://player.bilibili.com/player.html?isOutside=true&bvid=BV1na9gYgEpq&p=1&danmaku=0"><iframe src="https://player.bilibili.com/player.html?isOutside=true&bvid=BV1na9gYgEpq&p=1&danmaku=0" referrerpolicy="no-referrer" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen title="Yakka Dee Rain Bilibili 播放器"></iframe></div>
         </div>
       </section>
 
@@ -823,29 +771,12 @@
               "</footer>" +
             "</div>";
 
-          /* 播放器（手勢載入版）：入頁只顯示封面層，入頁時唔建立、唔存在任何 iframe；
-             用戶㩒下播放掣，先至喺嗰次㩒掣嘅事件處理內即時同步建立 iframe（src 直接帶實網址＋
-             no-referrer，同迭代二寫法一致）取代封面原地播放；離開呢頁就成個 iframe 移除停播
-             兼回復封面，返嚟要再㩒一次先播（本實驗設計） */
+          /* 官方格式嵌入：入頁渲染時即建立 iframe、直接帶實 src；
+             離頁時由全站導航移除 iframe 停播（data-bili-src 留作重入頁重建）。 */
           var biliWrap = view.querySelector(".bili-wrap");
-          var coverHtml = '<button type="button" class="bili-cover" aria-label="播放 Yakka Dee ' + ep.en + '">' +
-            '<span class="bili-cover-emoji" aria-hidden="true">' + ep.emoji + "</span>" +
-            '<span class="bili-cover-title">' + ep.en + "《" + ep.zh + "》</span>" +
-            '<span class="bili-cover-btn" aria-hidden="true">▶</span>' +
-            '<span class="bili-cover-hint">㩒嚟播放</span>' +
-            "</button>";
-          var playerHtml = '<iframe src="https://player.bilibili.com/player.html?bvid=' + EP_BV[ep.n] + '&page=1&danmaku=0" title="Yakka Dee ' + ep.en + '（Bilibili 播放器）" referrerpolicy="no-referrer" allow="autoplay; fullscreen; encrypted-media; picture-in-picture" allowfullscreen="allowfullscreen"></iframe>';
-          function showCover() { biliWrap.innerHTML = coverHtml; }
-          biliWrap.addEventListener("click", function (e) {
-            var t = e.target;
-            while (t && t !== biliWrap && !(t.classList && t.classList.contains("bili-cover"))) t = t.parentNode;
-            if (!t || t === biliWrap) return;
-            biliWrap.innerHTML = playerHtml;
-          });
-          showCover();
-          new MutationObserver(function () {
-            if (view.hidden) showCover();
-          }).observe(view, { attributes: true, attributeFilter: ["hidden"] });
+          var biliSrc5 = "https://player.bilibili.com/player.html?isOutside=true&bvid=" + EP_BV[ep.n] + "&p=1&danmaku=0";
+          biliWrap.setAttribute("data-bili-src", biliSrc5);
+          biliWrap.innerHTML = '<iframe src="' + biliSrc5 + '" referrerpolicy="no-referrer" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen title="Yakka Dee ' + ep.en + ' Bilibili 播放器"></iframe>';
 
           return view;
         }
@@ -927,8 +858,7 @@
          片源：UP 主「三千2018」嘅 Yakka Dee 第 1–4 季，BV 逐條照來源檔原文，唔可以改。
          第 6、7 季片源：UP 主「laurence520」合集，BV 逐條照 S06-S07-bilibili-sources.md 原文，唔可以改。
          季度頁（#s1–#s4）= 真集數卡列表，風格同第五季揀集頁一致；
-         集數頁（#s1e01 等新 hash）= Bilibili 播放器（手勢載入版：入頁只顯示封面，
-         㩒播放掣先喺㩒掣事件內建立 iframe、離開頁成個移除停播兼回復封面）；
+         集數頁（#s1e01 等新 hash）= 官方格式 iframe 嵌入（入頁即載、離頁移除停播）；
          唔設字幕、生字卡、歌詞（用戶決定：連結版行速度與擴展性）。
          S04 第 8 集 Cheese 喺三千2018 空間冇上傳，改用 UP 主「擇青春」嘅足本
          （BV13NRGYhEo3）補返，四季 80 集全部齊全；季度頁嘅「暫缺」灰卡只係
@@ -1169,29 +1099,12 @@
               "</div>";
             document.body.appendChild(ev);
 
-            /* 播放器（手勢載入版）：入頁只顯示封面層，入頁時唔建立、唔存在任何 iframe；
-               用戶㩒下播放掣，先至喺嗰次㩒掣嘅事件處理內即時同步建立 iframe（src 直接帶實網址＋
-               no-referrer，同迭代二寫法一致）取代封面原地播放；離開呢頁就成個 iframe 移除停播
-               兼回復封面，返嚟要再㩒一次先播（本實驗設計） */
+            /* 官方格式嵌入：入頁渲染時即建立 iframe、直接帶實 src；
+               離頁時由全站導航移除 iframe 停播（data-bili-src 留作重入頁重建）。 */
             var biliWrap = ev.querySelector(".bili-wrap");
-            var coverHtml = '<button type="button" class="bili-cover" aria-label="播放 Yakka Dee ' + ep[1] + '">' +
-              '<span class="bili-cover-emoji" aria-hidden="true">' + ep[3] + "</span>" +
-              '<span class="bili-cover-title">' + ep[1] + "《" + ep[2] + "》</span>" +
-              '<span class="bili-cover-btn" aria-hidden="true">▶</span>' +
-              '<span class="bili-cover-hint">㩒嚟播放</span>' +
-              "</button>";
-            var playerHtml = '<iframe src="https://player.bilibili.com/player.html?bvid=' + ep[4] + '&page=1&danmaku=0" title="Yakka Dee ' + ep[1] + '（Bilibili 播放器）" referrerpolicy="no-referrer" allow="autoplay; fullscreen; encrypted-media; picture-in-picture" allowfullscreen="allowfullscreen"></iframe>';
-            function showCover() { biliWrap.innerHTML = coverHtml; }
-            biliWrap.addEventListener("click", function (e) {
-              var t = e.target;
-              while (t && t !== biliWrap && !(t.classList && t.classList.contains("bili-cover"))) t = t.parentNode;
-              if (!t || t === biliWrap) return;
-              biliWrap.innerHTML = playerHtml;
-            });
-            showCover();
-            new MutationObserver(function () {
-              if (ev.hidden) showCover();
-            }).observe(ev, { attributes: true, attributeFilter: ["hidden"] });
+            var biliSrcL = "https://player.bilibili.com/player.html?isOutside=true&bvid=" + ep[4] + "&p=1&danmaku=0";
+            biliWrap.setAttribute("data-bili-src", biliSrcL);
+            biliWrap.innerHTML = '<iframe src="' + biliSrcL + '" referrerpolicy="no-referrer" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen title="Yakka Dee ' + ep[1] + ' Bilibili 播放器"></iframe>';
           });
         });
       })();
@@ -1203,8 +1116,7 @@
          來自「掀紗折扇」及「有故事的覓學人」；補完批 4 首（編號 47–50）全站搜尋採集。BV 逐條照來源檔
          （super-simple-songs-sources.md）原文，唔可以改；顯示順序跟來源檔。
          歌單頁（#sss）= 歌曲卡列表，風格同 Yakka Dee 揀集卡一致；
-         歌曲頁（#sss01 等）= Bilibili 播放器（手勢載入版：入頁只顯示封面，
-         㩒播放掣先喺㩒掣事件內建立 iframe、離開頁成個移除停播兼回復封面）；
+         歌曲頁（#sss01 等）= 官方格式 iframe 嵌入（入頁即載、離頁移除停播）；
          底部「上一首／下一首」喺清單內跳轉，首尾按邊界處理。
          總站中性原則：歌單頁同歌曲頁頁首唔放 Yakka Dee logo。 */
       (function () {
@@ -1336,29 +1248,12 @@
             "</div>";
           document.body.appendChild(ev);
 
-          /* 播放器（手勢載入版）：入頁只顯示封面層，入頁時唔建立、唔存在任何 iframe；
-             用戶㩒下播放掣，先至喺嗰次㩒掣嘅事件處理內即時同步建立 iframe（src 直接帶實網址＋
-             no-referrer，同迭代二寫法一致）取代封面原地播放；離開呢頁就成個 iframe 移除停播
-             兼回復封面，返嚟要再㩒一次先播（本實驗設計） */
+          /* 官方格式嵌入：入頁渲染時即建立 iframe、直接帶實 src；
+             離頁時由全站導航移除 iframe 停播（data-bili-src 留作重入頁重建）。 */
           var biliWrap = ev.querySelector(".bili-wrap");
-          var coverHtml = '<button type="button" class="bili-cover" aria-label="播放 Super Simple Songs ' + song[1] + '">' +
-            '<span class="bili-cover-emoji" aria-hidden="true">' + song[3] + "</span>" +
-            '<span class="bili-cover-title">' + song[1] + "《" + song[2] + "》</span>" +
-            '<span class="bili-cover-btn" aria-hidden="true">▶</span>' +
-            '<span class="bili-cover-hint">㩒嚟播放</span>' +
-            "</button>";
-          var playerHtml = '<iframe src="https://player.bilibili.com/player.html?bvid=' + song[4] + '&page=1&danmaku=0" title="Super Simple Songs ' + song[1] + '（Bilibili 播放器）" referrerpolicy="no-referrer" allow="autoplay; fullscreen; encrypted-media; picture-in-picture" allowfullscreen="allowfullscreen"></iframe>';
-          function showCover() { biliWrap.innerHTML = coverHtml; }
-          biliWrap.addEventListener("click", function (e) {
-            var t = e.target;
-            while (t && t !== biliWrap && !(t.classList && t.classList.contains("bili-cover"))) t = t.parentNode;
-            if (!t || t === biliWrap) return;
-            biliWrap.innerHTML = playerHtml;
-          });
-          showCover();
-          new MutationObserver(function () {
-            if (ev.hidden) showCover();
-          }).observe(ev, { attributes: true, attributeFilter: ["hidden"] });
+          var biliSrcS = "https://player.bilibili.com/player.html?isOutside=true&bvid=" + song[4] + "&p=1&danmaku=0";
+          biliWrap.setAttribute("data-bili-src", biliSrcS);
+          biliWrap.innerHTML = '<iframe src="' + biliSrcS + '" referrerpolicy="no-referrer" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen title="Super Simple Songs ' + song[1] + ' Bilibili 播放器"></iframe>';
         });
       })();
     </script>
@@ -1386,11 +1281,43 @@
           for (var i = 0; i < gens.length; i++) list.push(gens[i]);
           return list;
         }
+        function mountBili(view) {
+          if (!view || !view.querySelectorAll) return;
+          var wraps = view.querySelectorAll(".bili-wrap");
+          for (var i = 0; i < wraps.length; i++) {
+            var wrap = wraps[i];
+            if (wrap.querySelector("iframe")) continue;
+            var src = wrap.getAttribute("data-bili-src");
+            if (!src) continue;
+            var ifr = document.createElement("iframe");
+            ifr.setAttribute("src", src);
+            ifr.setAttribute("referrerpolicy", "no-referrer");
+            ifr.setAttribute("allow", "autoplay; fullscreen; picture-in-picture; encrypted-media");
+            ifr.setAttribute("allowfullscreen", "");
+            ifr.setAttribute("title", "Bilibili 播放器");
+            wrap.appendChild(ifr);
+          }
+        }
+        function unmountBili(view) {
+          if (!view || !view.querySelectorAll) return;
+          var wraps = view.querySelectorAll(".bili-wrap");
+          for (var i = 0; i < wraps.length; i++) {
+            var wrap = wraps[i];
+            var ifr = wrap.querySelector("iframe");
+            if (!ifr) continue;
+            if (!wrap.getAttribute("data-bili-src")) wrap.setAttribute("data-bili-src", ifr.getAttribute("src"));
+            wrap.removeChild(ifr);
+          }
+        }
         function show(key) {
           var target = viewEl(key);
           if (!target) { key = "hub"; target = hubView; }
           var list = allViews();
-          for (var i = 0; i < list.length; i++) list[i].hidden = list[i] !== target;
+          for (var i = 0; i < list.length; i++) {
+            list[i].hidden = list[i] !== target;
+            if (list[i] !== target) unmountBili(list[i]);
+          }
+          mountBili(target);
           window.scrollTo(0, 0);
         }
         function go(key) {
@@ -1448,30 +1375,6 @@
         window.addEventListener("popstate", function () { show(parseHash()); });
         window.addEventListener("hashchange", function () { show(parseHash()); });
         show(parseHash());
-      })();
-    </script>
-    <script>
-      (function () {
-      /* ---------- 正片：B 站播放器（手勢載入版，同其他三個模板一致） ----------
-         入頁只顯示封面層（靜態 HTML 本身已經有，呢度唔建立任何 iframe）；
-         用戶㩒下播放掣，先至喺嗰次㩒掣嘅事件處理內即時同步建立 iframe（src 直接帶實網址＋
-         no-referrer，同迭代二寫法一致）取代封面原地播放；離開頁就成個 iframe 移除停播
-         兼回復封面，返嚟要再㩒一次先播（本實驗設計） ---------- */
-      var rainView = document.getElementById("ep-view");
-      var rainWrap = rainView ? rainView.querySelector(".bili-wrap") : null;
-      if (rainView && rainWrap) {
-        var rainCoverHtml = rainWrap.innerHTML;
-        var rainPlayerHtml = '<iframe src="https://player.bilibili.com/player.html?bvid=BV1na9gYgEpq&page=1&danmaku=0" title="Yakka Dee Rain（Bilibili 播放器）" referrerpolicy="no-referrer" allow="autoplay; fullscreen; encrypted-media; picture-in-picture" allowfullscreen="allowfullscreen"></iframe>';
-        rainWrap.addEventListener("click", function (e) {
-          var t = e.target;
-          while (t && t !== rainWrap && !(t.classList && t.classList.contains("bili-cover"))) t = t.parentNode;
-          if (!t || t === rainWrap) return;
-          rainWrap.innerHTML = rainPlayerHtml;
-        });
-        new MutationObserver(function () {
-          if (rainView.hidden) rainWrap.innerHTML = rainCoverHtml;
-        }).observe(rainView, { attributes: true, attributeFilter: ["hidden"] });
-      }
       })();
     </script>
   </body>
